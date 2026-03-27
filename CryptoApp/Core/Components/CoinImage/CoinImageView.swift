@@ -1,29 +1,40 @@
 //
-//  PreviewProvider.swift
+//  CoinImageView.swift
 //  CryptoApp
 //
-//  Created by Louis Vincelli on 2/19/26.
+//  Created by Louis Vincelli on 3/26/26.
 //
 
-import Foundation
 import SwiftUI
+import Combine
 
-extension PreviewProvider {
+struct CoinImageView: View {
     
-    static var dev: DeveloperPreview {
-        return DeveloperPreview.instance
+    @StateObject var vm: CoinImageViewModel
+    
+    init(coin: CoinModel) {
+        // _vm references state object of variable vm
+        _vm = StateObject(wrappedValue: CoinImageViewModel(coin: coin))
     }
     
+    var body: some View {
+        ZStack {
+            if let image = vm.image {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+            } else if vm.isLoading {
+                ProgressView()
+            } else {
+                Image(systemName: "questionmark")
+                    .foregroundStyle(Color.theme.secondaryText)
+            }
+        }
+    }
 }
 
-class DeveloperPreview {
-    
-    static let instance = DeveloperPreview()
-    private init() { }
-    
-    let homeVM = HomeViewModel()
-    
-    let coin = CoinModel(
+#Preview {
+    let sample = CoinModel(
        id: "bitcoin",
        symbol: "btc",
        name: "Bitcoin",
@@ -221,5 +232,7 @@ class DeveloperPreview {
        ]),
        priceChangePercentage24HInCurrency: 3952.64,
        currentHoldings: 1.5)
+    CoinImageView(coin: sample)
+        .padding()
+        .previewLayout(.sizeThatFits)
 }
-
