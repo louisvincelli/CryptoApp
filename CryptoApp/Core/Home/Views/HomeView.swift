@@ -15,6 +15,8 @@ struct HomeView: View {
     
     var body: some View {
         
+        @Bindable var vm = vm
+        
         ZStack {
             // background layer
             Color.theme.background
@@ -23,6 +25,8 @@ struct HomeView: View {
             // content layer
             VStack {
                 homeHeader
+                
+                SearchBarView(searchText: $vm.searchText)
                 
                 columnTitles
                 
